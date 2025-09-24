@@ -35,7 +35,18 @@ class _HomePageState extends State<HomePage> {
       body: mTodo.isNotEmpty ? ListView.builder(
         itemCount: mTodo.length,
         itemBuilder: (_, index) {
+          Color bgColor = Colors.grey.shade200;
+
+          if(mTodo[index]["t_priority"] == 1) {
+            bgColor = Colors.grey.shade200;
+          } else if(mTodo[index]["t_priority"] == 2) {
+            bgColor = Colors.yellow.shade200;
+          } else if(mTodo[index]["t_priority"] == 3) {
+            bgColor = Colors.red.shade200;
+          }
+
           return CheckboxListTile(
+            tileColor : bgColor,
             title: Text(mTodo[index]["t_title"], style: TextStyle(
               decoration: mTodo[index]["t_isCompleted"] == 1 ? TextDecoration.lineThrough : TextDecoration.none
             ),),
@@ -53,7 +64,11 @@ class _HomePageState extends State<HomePage> {
         child: Text("No Todo"),
       ),
       floatingActionButton: FloatingActionButton(onPressed: () async{
-        bool check = await dbHelper!.addTodo(title: "My Check List", desc: "DB with Provider");
+        bool check = await dbHelper!.addTodo(
+          title: "My Check List", 
+          desc: "DB with Provider",
+          priority: 2
+          );
 
         if(check){
           getTodos();
