@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_mate/db_helper.dart';
+import 'package:todo_mate/db_provider.dart';
 import 'package:todo_mate/home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => DbProvider(dbHelper: DbHelper.getInstance()),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

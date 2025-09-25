@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_mate/db_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_mate/add_todo_page.dart';
+import 'package:todo_mate/db_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,27 +9,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  DbHelper? dbHelper;
   List<Map<String, dynamic>> mTodo = [];
   int filter = 0;
 
   @override
   void initState() {
     super.initState();
-
-    dbHelper = DbHelper.getInstance();
-    getTodos();
-  }
-
-  void getTodos() async{ /// 0 -> all, 1 -> completed, 2 -> pending
-    mTodo = await dbHelper!.fetchAllTodo(filter);
-    setState(() {
-      
-    });
+    // Provider.of<DbProvider>(context, listen: false).fetchInitialTodos();
+    context.read<DbProvider>().fetchInitialTodos();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    // mTodo = Provider.of<DbProvider>(context).getData();
+    // mTodo = context.watch<DbProvider>().getData();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -39,21 +36,27 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(child: ElevatedButton(onPressed: (){
                 filter = 0;
-                getTodos();
+                // Provider.of<DbProvider>(context, listen: false).fetchInitialTodos();
+                context.read<DbProvider>().fetchInitialTodos(filter: filter);
               }, child: Text("All"))),
               SizedBox(width: 11,),
               Expanded(child: ElevatedButton(onPressed: (){
                 filter = 1;
-                getTodos();
+                // Provider.of<DbProvider>(context, listen: false).fetchInitialTodos(filter: filter);
+                context.read<DbProvider>().fetchInitialTodos(filter: filter);
               }, child: Text("Completed"))),
               SizedBox(width: 11,),
               Expanded(child: ElevatedButton(onPressed: (){
                 filter = 2;
-                getTodos();
+                // Provider.of<DbProvider>(context, listen: false).fetchInitialTodos(filter: filter);
+                context.read<DbProvider>().fetchInitialTodos(filter: filter);
               }, child: Text("Pending"))),
             ],
           ),
-          Expanded(
+          Consumer<DbProvider>(
+            builder: (_, provider, __){
+              mTodo = provider.getData();
+              return Expanded(
             child: mTodo.isNotEmpty ? ListView.builder(
                     itemCount: mTodo.length,
                     itemBuilder: (_, index) {
@@ -77,27 +80,19 @@ class _HomePageState extends State<HomePage> {
               ),),
               value: mTodo[index]["t_isCompleted"] == 1, 
               onChanged: (value) async {
-                bool check = await dbHelper!.updateTodoCompleted(id: mTodo[index]["t_id"], isCompleted: value!);
-                if(check){
-                  getTodos();
-                }
+                // Provider.of<DbProvider>(context).isCompleted(id: mTodo[index]["t_id"], isCompleted: value!, filter: filter);
+                context.read<DbProvider>().isCompleted(id: mTodo[index]["t_id"], isCompleted: value!, filter: filter);
               });
                   }) : Center(
                     child: Text("No Todo"),
                   ),
-          ),
+          );
+            } 
+            )
         ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: () async{
-        bool check = await dbHelper!.addTodo(
-          title: "My Check List", 
-          desc: "DB with Provider",
-          priority: 2
-          );
-
-        if(check){
-          getTodos();
-        }
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AddTodoPage()));
       },child: Icon(Icons.add),
       ),
     );
