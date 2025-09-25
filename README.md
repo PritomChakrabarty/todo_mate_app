@@ -1,16 +1,28 @@
-# todo_mate
+# TodoMate - A Flutter Todo App
 
-A new Flutter project.
+TodoMate is a lightweight and efficient **task management app** built with **Flutter**, featuring **local persistence with SQLite** and **state management using Provider**.  
+It is designed to demonstrate clean architecture, structured state management, and full CRUD operations in Flutter.  
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Key Features
+- **Add Todos** – Create tasks with a title, description, and priority level.
+- **Mark as Complete/Incomplete** – Toggle tasks easily using checkboxes.
+- **Edit Todos** – Update title, description, and priority at any time.
+- **Delete with Confirmation** – Prevent accidental deletions with a confirmation dialog.
+- **Filter Todos** – Switch between:
+  - All Tasks  
+  - Completed Tasks  
+  - Pending Tasks
+- **Priority Highlighting** – Tasks are color-coded:
+  - Low → Grey
+  - Medium → Yellow
+  - High → Red
+- **Persistent Storage** – All tasks are saved locally using SQLite.
+- **State Management** – Powered by Provider for clean and reactive UI updates.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Architecture & Project Structure
+The project follows a **Provider + Repository pattern**, separating concerns between UI, state management, and data persistence.  
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
