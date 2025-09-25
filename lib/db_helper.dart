@@ -44,10 +44,19 @@ class DbHelper {
     return rowsEffected > 0;
   }
 
-  Future<List<Map<String, dynamic>>> fetchAllTodo() async {
+  Future<List<Map<String, dynamic>>> fetchAllTodo(int filter ) async {
     var db = await initDB();
-    List<Map<String, Object?>> allTodo = await db.query("todo");
+    List<Map<String, Object?>> allTodo = [];
 
+    if(filter > 0) {
+    allTodo = await db.query(
+      "todo", 
+      where: "t_isCompleted = ?", 
+      whereArgs: [filter == 1 ? 1 : 0], 
+      orderBy: "t_created_at DESC");
+    } else {
+      allTodo = await db.query("todo", orderBy: "t_created_at DESC");
+    }
     return allTodo;
   }
 
